@@ -1,3 +1,4 @@
+package data;
 import japa.parser.JavaParser;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.MethodDeclaration;
@@ -11,36 +12,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// naive implementation
-public class main {
+// reinforced implementation
+public class Main {
 	
-	private static List<String> filePaths = new ArrayList<String>();
-	private static List<String>	classes = new ArrayList<String>();
-	
-	private static Map<String, List<String>> m = new HashMap<String, List<String>>();
-	private static List<HashMap> classesAndMethods = new ArrayList<HashMap>();
-	private static List<String> methods = new ArrayList<String>();
+	private static List<Class> loc = new ArrayList<Class>();
+	private static List<Method> lom = new ArrayList<Method>();
+//	private static List<String> filePaths = new ArrayList<String>();
+//	private static List<String>	classes = new ArrayList<String>();
+//	
+//	private static Map<String, List<String>> m = new HashMap<String, List<String>>();
+//	private static List<HashMap> classesAndMethods = new ArrayList<HashMap>();
+//	private static List<String> methods = new ArrayList<String>();
 	
 	
     
     public static void main(String[] args) throws Exception {
         // creates an input stream for the file to be parsed
         
-        
         // path may vary
-        searchJava("/Users/yangzr1818/Documents/workspace/PacmanLab4/src/ca/ubc/cpsc210/pacman/model");
+        searchJava("D:\\assignment\\CPSC\\410\\Pacman");    
         
-        for(String s: classes){
-            System.out.println(s);
-        }
-        
-        
-        
-        
-        
-        for(int i = 0; i<filePaths.size();i++){
-            
-            FileInputStream in = new FileInputStream(filePaths.get(i));
+        for(int i = 0; i<loc.size();i++){
+            Class c = loc.get(i);
+            FileInputStream in = new FileInputStream(c.getPath());
             CompilationUnit cu;
             try {
                 // parse the file
@@ -55,17 +49,24 @@ public class main {
             
             Map<String, List<String>> tempM = new HashMap<String, List<String>>();
             List<String> tempMethods = new ArrayList<String>();
-            
-            tempMethods.addAll(methods);
-            tempM.put(classes.get(i), tempMethods);
-            classesAndMethods.add((HashMap<String, List<String>>) tempM);
-            
-            methods.clear();
+            for(Method m: lom){
+            	m.setClass(c);
+            }
+            c.addAllMethod(lom);
+//            
+//            tempMethods.addAll(methods);
+//            tempM.put(classes.get(i), tempMethods);
+//            classesAndMethods.add((HashMap<String, List<String>>) tempM);
+//            
+//            methods.clear();
+            lom.clear();
         }
         
-        
-        System.out.println(classesAndMethods.get(0).keySet());
-        System.out.println(classesAndMethods.get(0).get("Board"));
+        for(Class c: loc){
+        	c.print();
+        }
+//        System.out.println(classesAndMethods.get(0).keySet());
+//        System.out.println(classesAndMethods.get(0).get("Board"));
         
         
     }
@@ -80,8 +81,8 @@ public class main {
             // here you can access the attributes of the method.
             // this method will be called for all methods in this
             // CompilationUnit, including inner class methods
-            // System.out.println(n.getName());
-            methods.add(n.getName());
+//            methods.add(n.getName());
+            lom.add(new Method(n.getName()));
         }
     }
     
@@ -100,8 +101,10 @@ public class main {
                         subDirectories.add(f);
                     }
                     else if (f.getName().endsWith((".java"))) {
-                        filePaths.add(f.getPath());
-                        classes.add(EliminateDotJava(f.getName()));                    		  }
+//                        filePaths.add(f.getPath());
+//                        classes.add(EliminateDotJava(f.getName()));
+                        loc.add(new Class(EliminateDotJava(f.getName()),f.getPath()));
+                    }
             }
             directories.clear();
             directories.addAll(subDirectories);
