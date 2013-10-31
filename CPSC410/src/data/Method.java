@@ -44,7 +44,7 @@ public class Method {
 	
 	// print info for debug
 	public void print(){
-		System.out.println(this.name);
+		System.out.println("  " +this.name);
 	}
 	
 	// print class name for debug
