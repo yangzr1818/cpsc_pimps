@@ -17,6 +17,8 @@ public class Class {
 	private List<Field> lof = new ArrayList<Field>();
 	private List<Class> oneToOneRelation = new ArrayList<Class>();
 	private List<Class> oneToManyRelation = new ArrayList<Class>();
+	private List<String> extend = new ArrayList<String>();
+	private List<String> implement = new ArrayList<String>();
 	
 	// empty constructor
 	public Class(){
@@ -153,6 +155,21 @@ public class Class {
 	public void addOneToManyRelation(Class r){
 		this.oneToManyRelation.add(r);
 	}
+	/**
+	 * 
+	 * @param e
+	 */
+	public void addAllExtend(List<String> e){
+		this.extend.addAll(e);
+	}
+	
+	/**
+	 * 
+	 * @param i
+	 */
+	public void addAllImplement(List<String> i){
+		this.implement.addAll(i);
+	}
 	
 	/**
 	 *  print out all the information for debug
@@ -175,6 +192,8 @@ public class Class {
 		System.out.println("to-many relationships:");
 		for(Class c : this.oneToManyRelation)
 			System.out.println("  "+c.getName());
+		System.out.println("extends: "+this.extend);
+		System.out.println("implements: "+this.implement);
 		
 	}
 

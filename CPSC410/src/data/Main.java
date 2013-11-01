@@ -2,11 +2,13 @@ package data;
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
 import japa.parser.ast.body.VariableDeclaratorId;
 import japa.parser.ast.expr.VariableDeclarationExpr;
+import japa.parser.ast.type.ClassOrInterfaceType;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.File;
@@ -25,6 +27,8 @@ public class Main {
 	private static List<Class> loc = new ArrayList<Class>();
 	private static List<Method> lom = new ArrayList<Method>();
 	private static List<Field> lof = new ArrayList<Field>();
+	private static List<String> loe = new ArrayList<String>();
+	private static List<String> loi = new ArrayList<String>();
     
     public static void main(String[] args) throws Exception {
         // creates an input stream for the file to be parsed
@@ -51,8 +55,14 @@ public class Main {
             c.setPackage(cu.getPackage().getName().toString());
             parseMethods(c, cu);
             parseFields(c, cu);
+            new ClassOrInterfaceVisitor().visit(cu, null);
+            c.addAllExtend(loe);
+            loe.clear();
+            c.addAllImplement(loi);
+            loi.clear();
         }
 		findRelation();
+		
         // print for debug
         for(Class c: loc){
         	c.print();
@@ -89,7 +99,6 @@ public class Main {
             // this method will be called for all methods in this
             // CompilationUnit, including inner class methods
             lom.add(new Method(n.getName()));
-            //System.out.println();
         }
     }
     
@@ -104,6 +113,21 @@ public class Main {
     		}
     		else lof.add(new Field(vd.get(0).getId().toString(), n.getType().toString(),
     				"null"));
+    	}
+    }
+    
+ // visit FieldDeclaration nodes
+    private static class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
+    	
+    	public void visit(ClassOrInterfaceDeclaration n, Object arg){
+	    		if(n.getExtends()!=null)
+		    		for(ClassOrInterfaceType t :n.getExtends()){
+		    			loe.add(t.getName());
+		    		}
+	    		if(n.getImplements()!=null)
+		    		for(ClassOrInterfaceType t : n.getImplements()){
+		    			loi.add(t.getName());
+		    		}
     	}
     }
     
