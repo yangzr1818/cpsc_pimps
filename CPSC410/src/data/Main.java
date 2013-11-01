@@ -52,6 +52,7 @@ public class Main {
             parseMethods(c, cu);
             parseFields(c, cu);
         }
+		findRelation();
         // print for debug
         for(Class c: loc){
         	c.print();
@@ -121,9 +122,7 @@ public class Main {
                         subDirectories.add(f);
                     }
                     else if (f.getName().endsWith((".java"))) {
-//                        filePaths.add(f.getPath());
-//                        classes.add(EliminateDotJava(f.getName()));
-                        loc.add(new Class(EliminateDotJava(f.getName()),f.getPath()));
+                        loc.add(new Class(eliminateDotJava(f.getName()),f.getPath()));
                     }
             }
             directories.clear();
@@ -131,16 +130,61 @@ public class Main {
         }
         
     }
-    
-    public static String EliminateDotJava(String s){
+    /**
+     * Remove the characters after the '.'
+     * @param s file name
+     * @return the file name without the characters after the dot '.'
+     */
+    public static String eliminateDotJava(String s){
         int dotIndex=0;
-        for(int i=0; i<s.length();i++){
+        // iterate from the last character to the first one, because the filename extension is always
+        // at the end of the file name
+        for(int i=s.length()-1; i>0;i--){
             if(s.charAt(i) == '.'){
                 dotIndex=i;
+                // stop the iteration if dot is found
+                break;
             }
             
         }
         return s.substring(0, dotIndex);
     }
     
+    /**
+     * Find the relationship between classes, i.e. one-to-one, one-to-many
+     */
+    public static void findRelation(){
+    	for(Class c: loc){
+    		String className = c.getName();
+    		for(Class c2: loc){
+    			if(c2 != c){
+		    		for(Field f: c2.getFields()){
+		    			if(f.getType().equals(className))
+		    				c2.addOneToOneRelation(c);
+		    			else if (eliminateBracket(f.getType()).equals(className))
+		    				c2.addOneToManyRelation(c);
+		    				
+		    		}
+    			}
+    		}
+    	}
+    }
+    
+    /**
+     * 
+     */
+    public static String eliminateBracket(String s){
+    	int startIndex = 0,endIndex = 1;
+        // iterate from the last character to the first one
+        for(int i=s.length()-1; i>=1;i--){
+            if(s.charAt(i) == '>'){
+                endIndex = i;
+            }
+            if(s.charAt(i) == '<'){
+                startIndex = i;
+            }
+            
+        }
+        return s.substring(startIndex+1, endIndex);
+    }
 }
