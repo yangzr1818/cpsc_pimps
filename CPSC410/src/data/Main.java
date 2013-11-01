@@ -30,7 +30,7 @@ public class Main {
         // creates an input stream for the file to be parsed
         
         // path may vary
-        searchJava("/Users/kaisun/Desktop/Pacman");    
+        searchJava("D:\\assignment\\CPSC\\410\\Pacman");    
         
         parseFile();
         
