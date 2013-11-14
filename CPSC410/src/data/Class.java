@@ -164,8 +164,8 @@ public class Class {
 	}
 	
 	/**
-	 * 
-	 * @param i
+	 * add a list of implement
+	 * @param list of string 
 	 */
 	public void addAllImplement(List<String> i){
 		this.implement.addAll(i);
