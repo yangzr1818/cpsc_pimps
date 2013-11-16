@@ -86,6 +86,13 @@ public class Class {
 		return this.lof;
 	}
 	
+	public List<Class> getToOneRelationship(){
+		return this.oneToOneRelation;
+	}
+	
+	public List<Class> getToManyRelationship(){
+		return this.oneToManyRelation;
+	}
 	/**
 	 *  set the name of the class
 	 * @param name
@@ -160,7 +167,20 @@ public class Class {
 	 * @param e
 	 */
 	public void addAllExtend(List<String> e){
+//		for(int i=0; i<e.size();i++){
+//			if(e.get(i).equals("JPanel") || e.get(i).equals("JFrame")){
+//				e.remove(i);
+//			}
+//		}
 		this.extend.addAll(e);
+	}
+	
+	public List<String> getParentClass(){
+		return extend;
+	}
+	
+	public List<String> getInterface(){
+		return implement;
 	}
 	
 	/**

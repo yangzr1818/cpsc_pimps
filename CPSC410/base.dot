@@ -1,0 +1,151 @@
+digraph G {
+fontname = "Bitstream Vera Sans"
+fontsize = 8
+node [
+fontname = "Bitstream Vera Sans"
+fontsize = 8
+shape = "record"
+]
+edge [
+fontname = "Bitstream Vera Sans"
+fontsize = 8
+]
+Board[
+label = "{Board|- BOARD_WIDTH : int\l- BOARD_HEIGHT : int\l- BOARD_DEFN : String\l- board : List&lt;List&lt;GridLocation&gt;&gt;\l- pacman : Pacman\l- monsters : List&lt;Monster&gt;\l|+ initBoard() : void\l+ getBoardWidth() : int\l+ getBoardHeight() : int\l+ getLocation(x : int, y : int) : GridLocation\l+ getGridRows() : List&lt;List&lt;GridLocation&gt;&gt;\l+ getAllMonsters() : List&lt;Monster&gt;\l+ tickBoard() : void\l+ isGameOver() : boolean\l+ canMoveTo(new_x : int, new_y : int) : boolean\l+ moveTo(sprite : Sprite, new_x : int, new_y : int) : void\l+ getPacman() : Pacman\l}"
+]
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Board->Pacman
+edge[
+arrowhead = "none" 
+headlabel = "0...*"
+]
+Board->Monster
+GridLocation[
+label = "{GridLocation|- monsters : List&lt;Monster&gt;\l- pacman : Pacman\l- hasFood : boolean\l- isWall : boolean\l|+ isPassable() : boolean\l+ hasFood() : boolean\l+ hasSprite() : boolean\l+ addSprite(s : Sprite) : void\l+ removeSprite(s : Sprite) : void\l+ getPacman() : Pacman\l+ getSprite() : Sprite\l+ getMonsters() : Monster\l+ consumeFood() : void\l+ addFood() : void\l}"
+]
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+GridLocation->Pacman
+edge[
+arrowhead = "none" 
+headlabel = "0...*"
+]
+GridLocation->Monster
+Monster[
+label = "{Monster||}"
+]
+Sprite[
+lable = "{Sprite}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+Monster->Sprite
+
+Pacman[
+label = "{Pacman||+ getColor() : Color\l}"
+]
+Sprite[
+lable = "{Sprite}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+Pacman->Sprite
+
+RandomMonster[
+label = "{RandomMonster||+ getColor() : Color\l}"
+]
+Monster[
+lable = "{Monster}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+RandomMonster->Monster
+
+Sprite[
+label = "{Sprite|- board : Board\l- x_location : int\l- y_location : int\l- direction : char\l|+ getColor() : Color\l+ makeMove() : void\l+ setLocation(x : int, y : int) : void\l+ moveInCurrentDirection() : void\l+ canMakeMove() : boolean\l+ getX() : int\l+ getY() : int\l+ getDirection() : char\l+ getBoard() : Board\l+ setDirection(direction : char) : void\l}"
+]
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Sprite->Board
+TrackerMonster[
+label = "{TrackerMonster||+ getVerticalDirectionToPacman() : char\l+ getHorizontalDirectionToPacman() : char\l+ makeMove() : void\l+ getColor() : Color\l}"
+]
+Monster[
+lable = "{Monster}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+TrackerMonster->Monster
+
+BoardPanel[
+label = "{BoardPanel|- gameBoard : Board\l|+ paint(g : Graphics) : void\l+ centreString(str : String, g : Graphics, fm : FontMetrics, yPos : int) : void\l+ initLayout() : void\l+ initGridPanels() : void\l}"
+]
+JPanel[
+lable = "{JPanel}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+BoardPanel->JPanel
+
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+BoardPanel->Board
+Game[
+label = "{Game|- gameBoard : Board\l- gameViewPanel : BoardPanel\l- gameTicker : Timer\l|+ init() : void\l+ setupGameTicker() : void\l+ setupViewPanel() : void\l+ createMenus() : void\l+ main(args[] : String) : void\l+ actionPerformed(arg0 : ActionEvent) : void\l+ actionPerformed(e : ActionEvent) : void\l+ keyPressed(e : KeyEvent) : void\l+ keyReleased(e : KeyEvent) : void\l+ keyTyped(e : KeyEvent) : void\l}"
+]
+JFrame[
+lable = "{JFrame}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+Game->JFrame
+
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Game->Board
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Game->BoardPanel
+GridLocationPanel[
+label = "{GridLocationPanel|- GRID_HEIGHT : int\l- GRID_WIDTH : int\l- FOOD_SIZE : int\l- gridLocation : GridLocation\l|+ paint(g : Graphics) : void\l}"
+]
+JPanel[
+lable = "{JPanel}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+GridLocationPanel->JPanel
+
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+GridLocationPanel->GridLocation
+}

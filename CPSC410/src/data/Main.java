@@ -5,6 +5,7 @@ import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.body.Parameter;
 import japa.parser.ast.body.VariableDeclarator;
 import japa.parser.ast.body.VariableDeclaratorId;
 import japa.parser.ast.expr.VariableDeclarationExpr;
@@ -16,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +37,10 @@ public class Main {
         // creates an input stream for the file to be parsed
         
         // path may vary
-        searchJava("D:\\assignment\\CPSC\\410\\Pacman");    
+        searchJava("D:\\assignment\\CPSC\\410\\PacmanLab4");    
         
         parseFile();
-        
+        fileGenerator();
     }
 
 	private static void parseFile() throws FileNotFoundException,
@@ -98,7 +101,14 @@ public class Main {
             // here you can access the attributes of the method.
             // this method will be called for all methods in this
             // CompilationUnit, including inner class methods
-            lom.add(new Method(n.getName()));
+        	Method m = new Method(n.getName());
+            
+            if(n.getParameters()!=null){
+            	List<Parameter> para = n.getParameters();
+            	m.setParameters(para);
+            }
+            m.setReturnType(n.getType().toString());
+            lom.add(m);
         }
     }
     
@@ -211,4 +221,80 @@ public class Main {
         }
         return s.substring(startIndex+1, endIndex);
     }
+    
+    public static void fileGenerator() throws FileNotFoundException, UnsupportedEncodingException{
+    	PrintWriter writer = new PrintWriter("base.dot", "UTF-8");
+    	writer.println("digraph G {\n"+
+    					"fontname = \"Bitstream Vera Sans\"\n"+
+    					"fontsize = 8\n"+
+    					"node [\n"+
+    					"fontname = \"Bitstream Vera Sans\"\n"+
+    					"fontsize = 8\n"+
+    					"shape = \"record\"\n"+
+    					"]\n"+
+    					"edge [\n"+
+    					"fontname = \"Bitstream Vera Sans\"\n"+
+    					"fontsize = 8\n"+
+        	"]");
+    	for(Class n: loc){
+	    	List<Field> f = n.getFields();
+	    	List<Method> m = n.getMethods();
+	    	String fields="|", methods = "|";
+	    	for(Field field: f){
+	    		String fieldName = field.getName();
+	    		String fieldType = field.getType();
+	    		fieldType = fieldType.replaceAll("<", "&lt;");
+	    		fieldType = fieldType.replaceAll(">", "&gt;");
+	    		fields = fields+"- "+fieldName+" : "+fieldType+"\\l";
+	    	}
+	    	for(Method method: m){
+	    		String methodName = method.getName();
+	    		String parameter = "";
+	    		if(method.getParameters() != null){
+	    			for(Parameter p : method.getParameters()){
+	    				if(parameter == "")
+	    					parameter = parameter+p.getId().toString()+" : "+p.getType().toString();
+	    				else parameter = parameter+", "+p.getId().toString()+" : "+p.getType().toString();
+	    			}
+	    		}
+	    		String returnType = method.getReturnType().replaceAll("<", "&lt;");
+	    		returnType = returnType.replaceAll(">", "&gt;");
+	    		methods = methods+"+ "+methodName+"("+parameter+") : "+returnType+"\\l";
+	    	}
+	    	writer.println(n.getName()+"[\nlabel = \"{"+n.getName()+fields+methods+"}\"\n]");
+	    	
+	    	ArrayList<String> parentClasses = (ArrayList<String>) n.getParentClass();
+	    	for(String p:parentClasses){
+	    		String a = n.getName()+"->"+p;
+	    		if(findClass(p)==null){
+	    			writer.println(p+"[\nlable = \"{"+p+"}\"\n]");
+	    		}
+	    		writer.println( "edge [\narrowhead = \"empty\" \nheadlabel=\"\"\n5]\n"+a+"\n");
+	    		
+	    	}
+	    	for(Class c : n.getToOneRelationship()){
+	    		String relation = n.getName()+"->"+c.getName();
+	    		writer.println("edge[\narrowhead = \"none\" \nheadlabel = \"0,1\"\n]\n"+relation);
+	    	}
+	    	for(Class c : n.getToManyRelationship()){
+	    		String relation = n.getName()+"->"+c.getName();
+	    		writer.println("edge[\narrowhead = \"none\" \nheadlabel = \"0...*\"\n]\n"+relation);
+	    	}
+	    	
+    	}
+    	writer.println("}");
+    	writer.close();
+    }
+    
+    /**
+     * 
+     */
+    public static Class findClass(String name){
+    	for(Class c : loc){
+    		if(c.getName() == name)
+    			return c;
+    	}
+    	return null;
+    }
+    
 }

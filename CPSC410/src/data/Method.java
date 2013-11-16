@@ -1,5 +1,10 @@
 package data;
 
+import japa.parser.ast.body.Parameter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *  store all the info needed related to the method
  * 
@@ -9,6 +14,8 @@ public class Method {
 
 	private String name;
 	private Class c;
+	private List<Parameter> parameters = new ArrayList<Parameter>();
+	private String returnType;
 	
 	// empty constructor
 	public Method(){
@@ -50,6 +57,20 @@ public class Method {
 	}
 	
 	/**
+	 *  get the return type of this method
+	 */
+	public String getReturnType(){
+		return this.returnType;
+	}
+	
+	/**
+	 *  get the parameters of this method
+	 */
+	public List<Parameter> getParameters(){
+		return this.parameters;
+	}
+	
+	/**
 	 *  set the class that the method is in
 	 * @param newClass class that contains this method
 	 */
@@ -66,10 +87,32 @@ public class Method {
 	}
 	
 	/**
+	 *  set the return type of this method
+	 */
+	public void setReturnType(String type){
+		this.returnType = type;
+	}
+	
+	/**
+	 *  set the parameters of this method
+	 */
+	public void setParameters(List<Parameter> lop){
+		this.parameters = lop;
+	}
+	
+	/**
 	 *  print info for debug
 	 */
 	public void print(){
-		System.out.println("  " +this.name);
+		String parameter = "";
+		if(this.parameters != null){
+			for(Parameter p : this.parameters){
+				if(parameter == "")
+					parameter = parameter+p.getId().toString()+" : "+p.getType().toString();
+				else parameter = parameter+", "+p.getId().toString()+" : "+p.getType().toString();
+			}
+		}
+		System.out.println("  " +this.name+"("+parameter+") : "+this.returnType);
 	}
 	
 	/**

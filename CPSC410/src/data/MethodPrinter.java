@@ -9,15 +9,12 @@ import data.Rec;
 
 public class MethodPrinter {
 	public static void main(String[] args) throws Exception {
-        
-        JFrame f = new JFrame("UML");
-        	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        	Rec r = new Rec();
-        	r.infoRec(10,20,34,43);
-        	r.infoRec(1,2,34,43);
-        	f.add(r);
-        	f.setSize(400,250);
-        	f.setVisible(true);
+		JFrame f = new JFrame();  
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+        f.getContentPane().add(new InnerText());  
+        f.setSize(400,400);  
+        f.setLocation(200,200);  
+        f.setVisible(true); 
  
     
    
