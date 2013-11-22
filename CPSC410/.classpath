@@ -4,5 +4,27 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="plug-ins/javaparser-1.0.8.jar"/>
 	<classpathentry kind="lib" path="plug-ins/aspectj-1.7.4.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyAspect-2.1.3.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyIO-2.1.3_src.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyIO-2.1.3.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyLib-2.1.3_src.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyLib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyUI-2.1.3_src.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyUI-2.1.3.jar"/>
+	<classpathentry kind="lib" path="plug-ins/PerfSpyAspect-2.1.3_src.jar"/>
+	<classpathentry kind="lib" path="plug-ins/aspectjweaver1.7.1.jar"/>
+	<classpathentry kind="lib" path="plug-ins/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="plug-ins/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="plug-ins/dom4j.jar"/>
+	<classpathentry kind="lib" path="plug-ins/guava-13.0.1.jar"/>
+	<classpathentry kind="lib" path="plug-ins/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-netbeans-swing-outline.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-awt.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-dialogs.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-explorer.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-filesystems.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-nodes.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-util-lookup.jar"/>
+	<classpathentry kind="lib" path="plug-ins/org-openide-util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -24,14 +24,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+
+import com.perfspy.aspect.AbstractPerfSpyAspect;
+
 // reinforced implementation
 public class Main {
 	
 	private static List<Class> loc = new ArrayList<Class>();
-	private static List<Method> lom = new ArrayList<Method>();
-	private static List<Field> lof = new ArrayList<Field>();
-	private static List<String> loe = new ArrayList<String>();
-	private static List<String> loi = new ArrayList<String>();
+	private static FileParser fileParser;
     
     public static void main(String[] args) throws Exception {
         // creates an input stream for the file to be parsed
@@ -39,113 +41,23 @@ public class Main {
         // path may vary
         searchJava("D:\\assignment\\CPSC\\410\\PacmanLab4");    
         
-        parseFile();
+        fileParser.parseFile();
         fileGenerator();
+        PerfSpyDemoAsepct p = new PerfSpyDemoAsepct();
+        p.withinCflowOps();
+        p.cflowOps();
     }
 
-	private static void parseFile() throws FileNotFoundException,
-			ParseException, IOException {
-		for(int i = 0; i<loc.size();i++){
-            Class c = loc.get(i);
-            FileInputStream in = new FileInputStream(c.getPath());
-            CompilationUnit cu;
-            try {
-                // parse the file
-                cu = JavaParser.parse(in);
-            } finally {
-                in.close();
-            }
-            c.setPackage(cu.getPackage().getName().toString());
-            parseMethods(c, cu);
-            parseFields(c, cu);
-            new ClassOrInterfaceVisitor().visit(cu, null);
-            c.addAllExtend(loe);
-            loe.clear();
-            c.addAllImplement(loi);
-            loi.clear();
-        }
-		findRelation();
-		
-        // print for debug
-        for(Class c: loc){
-        	c.print();
-        }
-	}
-
-	private static void parseFields(Class c, CompilationUnit cu) {
-		// visit the fields
-		new FieldVisitor().visit(cu, null);
-		for(Field f: lof)
-			f.setClass(c);
-		c.addAllFields(lof);
-		lof.clear();
-	}
-
-	private static void parseMethods(Class c, CompilationUnit cu) {
-		// visit the methods
-		new MethodVisitor().visit(cu, null);
-		for(Method m: lom){
-			m.setClass(c);
-		}
-		c.addAllMethod(lom);
-		lom.clear();
-	}
     
     /**
-     * Simple visitor implementation for visiting MethodDeclaration nodes.
+     *  given a root directory of a project, produce the file paths of all the java file
+     * @param path
      */
-    private static class MethodVisitor extends VoidVisitorAdapter {
-        
-        @Override
-        public void visit(MethodDeclaration n, Object arg) {
-            // here you can access the attributes of the method.
-            // this method will be called for all methods in this
-            // CompilationUnit, including inner class methods
-        	Method m = new Method(n.getName());
-            
-            if(n.getParameters()!=null){
-            	List<Parameter> para = n.getParameters();
-            	m.setParameters(para);
-            }
-            m.setReturnType(n.getType().toString());
-            lom.add(m);
-        }
-    }
-    
-    // visit FieldDeclaration nodes
-    private static class FieldVisitor extends VoidVisitorAdapter{
-    	
-    	public void visit(FieldDeclaration n, Object arg){
-    		List<VariableDeclarator> vd = n.getVariables();
-    		if(vd.get(0).getInit() != null){
-    			lof.add(new Field(vd.get(0).getId().toString(), n.getType().toString(),
-    				vd.get(0).getInit().toString()));
-    		}
-    		else lof.add(new Field(vd.get(0).getId().toString(), n.getType().toString(),
-    				"null"));
-    	}
-    }
-    
- // visit FieldDeclaration nodes
-    private static class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
-    	
-    	public void visit(ClassOrInterfaceDeclaration n, Object arg){
-	    		if(n.getExtends()!=null)
-		    		for(ClassOrInterfaceType t :n.getExtends()){
-		    			loe.add(t.getName());
-		    		}
-	    		if(n.getImplements()!=null)
-		    		for(ClassOrInterfaceType t : n.getImplements()){
-		    			loi.add(t.getName());
-		    		}
-    	}
-    }
-    
-    // given a root directory of a project, produce the file paths of all the java file
     public static void searchJava(String path){
         
         File dir = new File(path);
         List<File> directories = new ArrayList<File>();
+        List<Class> loc = new ArrayList<Class>();
         directories.add(dir);
         while (!directories.isEmpty())
         {
@@ -162,7 +74,7 @@ public class Main {
             directories.clear();
             directories.addAll(subDirectories);
         }
-        
+        fileParser = new FileParser(loc);
     }
     /**
      * Remove the characters after the '.'
@@ -222,30 +134,35 @@ public class Main {
         return s.substring(startIndex+1, endIndex);
     }
     
+    /**
+     * generate the .dot file for graphviz to draw the class diagram
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
     public static void fileGenerator() throws FileNotFoundException, UnsupportedEncodingException{
     	PrintWriter writer = new PrintWriter("base.dot", "UTF-8");
     	writer.println("digraph G {\n"+
     					"fontname = \"Bitstream Vera Sans\"\n"+
-    					"fontsize = 8\n"+
+    					"fontsize = 10\n"+
     					"node [\n"+
     					"fontname = \"Bitstream Vera Sans\"\n"+
-    					"fontsize = 8\n"+
+    					"fontsize = 10\n"+
     					"shape = \"record\"\n"+
     					"]\n"+
     					"edge [\n"+
     					"fontname = \"Bitstream Vera Sans\"\n"+
-    					"fontsize = 8\n"+
+    					"fontsize = 10\n"+
         	"]");
     	for(Class n: loc){
 	    	List<Field> f = n.getFields();
 	    	List<Method> m = n.getMethods();
-	    	String fields="|", methods = "|";
+	    	String fields="<tr><td></td></tr>", methods = "<tr><td></td></tr>";
 	    	for(Field field: f){
 	    		String fieldName = field.getName();
 	    		String fieldType = field.getType();
 	    		fieldType = fieldType.replaceAll("<", "&lt;");
 	    		fieldType = fieldType.replaceAll(">", "&gt;");
-	    		fields = fields+"- "+fieldName+" : "+fieldType+"\\l";
+	    		fields = fields+"<tr><td>- "+fieldName+" : "+fieldType+"</td></tr>";
 	    	}
 	    	for(Method method: m){
 	    		String methodName = method.getName();
@@ -259,9 +176,9 @@ public class Main {
 	    		}
 	    		String returnType = method.getReturnType().replaceAll("<", "&lt;");
 	    		returnType = returnType.replaceAll(">", "&gt;");
-	    		methods = methods+"+ "+methodName+"("+parameter+") : "+returnType+"\\l";
+	    		methods = methods+"<tr><td>+ "+methodName+"("+parameter+") : "+returnType+"</td></tr>";
 	    	}
-	    	writer.println(n.getName()+"[\nlabel = \"{"+n.getName()+fields+methods+"}\"\n]");
+	    	writer.println(n.getName()+"[\nlabel = <<table border=\"0\" cellborder=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"+n.getName()+"</td></tr>"+fields+methods+"</table>>\n]");
 	    	
 	    	ArrayList<String> parentClasses = (ArrayList<String>) n.getParentClass();
 	    	for(String p:parentClasses){
@@ -269,7 +186,7 @@ public class Main {
 	    		if(findClass(p)==null){
 	    			writer.println(p+"[\nlable = \"{"+p+"}\"\n]");
 	    		}
-	    		writer.println( "edge [\narrowhead = \"empty\" \nheadlabel=\"\"\n5]\n"+a+"\n");
+	    		writer.println( "edge [\narrowhead = \"empty\" \nheadlabel=\"\"\n]\n"+a+"\n");
 	    		
 	    	}
 	    	for(Class c : n.getToOneRelationship()){
@@ -287,7 +204,9 @@ public class Main {
     }
     
     /**
-     * 
+     * find the class given its name
+     * @param name
+     * @return the class found or null if not exist
      */
     public static Class findClass(String name){
     	for(Class c : loc){
@@ -295,6 +214,20 @@ public class Main {
     			return c;
     	}
     	return null;
+    }
+    
+    @Aspect
+    private static class PerfSpyDemoAsepct extends AbstractPerfSpyAspect {
+           
+            @Pointcut("execution(*)")
+            public void withinCflowOps() {
+            	
+            }
+
+           @Pointcut("cflow(execution(*)")
+            public void cflowOps() {
+            }
+
     }
     
 }

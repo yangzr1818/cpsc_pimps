@@ -1,0 +1,151 @@
+digraph G {
+fontname = "Bitstream Vera Sans"
+fontsize = 10
+node [
+fontname = "Bitstream Vera Sans"
+fontsize = 10
+shape = "record"
+]
+edge [
+fontname = "Bitstream Vera Sans"
+fontsize = 10
+]
+Board[color = "red",
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>Board</td></tr><tr><td></td></tr><tr><td>- BOARD_WIDTH : int</td></tr><tr><td>- BOARD_HEIGHT : int</td></tr><tr><td>- BOARD_DEFN : String</td></tr><tr><td>- board : List&lt;List&lt;GridLocation&gt;&gt;</td></tr><tr><td>- pacman : Pacman</td></tr><tr><td>- monsters : List&lt;Monster&gt;</td></tr><tr><td></td></tr><tr><td>+ initBoard() : void</td></tr><tr><td>+ getBoardWidth() : int</td></tr><tr><td>+ getBoardHeight() : int</td></tr><tr><td bgcolor="yellow">+ getLocation(x : int, y : int) : GridLocation</td></tr><tr><td>+ getGridRows() : List&lt;List&lt;GridLocation&gt;&gt;</td></tr><tr><td>+ getAllMonsters() : List&lt;Monster&gt;</td></tr><tr><td bgcolor="yellow">+ tickBoard() : void</td></tr><tr><td bgcolor="yellow">+ isGameOver() : boolean</td></tr><tr><td bgcolor="yellow">+ canMoveTo(new_x : int, new_y : int) : boolean</td></tr><tr><td bgcolor="yellow">+ moveTo(sprite : Sprite, new_x : int, new_y : int) : void</td></tr><tr><td>+ getPacman() : Pacman</td></tr></table>>
+]
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Board->Pacman
+edge[
+arrowhead = "none" 
+headlabel = "0...*"
+]
+Board->Monster
+GridLocation[color = "red",
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>GridLocation</td></tr><tr><td></td></tr><tr><td>- monsters : List&lt;Monster&gt;</td></tr><tr><td>- pacman : Pacman</td></tr><tr><td>- hasFood : boolean</td></tr><tr><td>- isWall : boolean</td></tr><tr><td></td></tr><tr><td bgcolor="yellow">+ isPassable() : boolean</td></tr><tr><td bgcolor="yellow">+ hasFood() : boolean</td></tr><tr><td>+ hasSprite() : boolean</td></tr><tr><td>+ addSprite(s : Sprite) : void</td></tr><tr><td>+ removeSprite(s : Sprite) : void</td></tr><tr><td>+ getPacman() : Pacman</td></tr><tr><td>+ getSprite() : Sprite</td></tr><tr><td>+ getMonsters() : Monster</td></tr><tr><td>+ consumeFood() : void</td></tr><tr><td>+ addFood() : void</td></tr></table>>
+]
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+GridLocation->Pacman
+edge[
+arrowhead = "none" 
+headlabel = "0...*"
+]
+GridLocation->Monster
+Monster[
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>Monster</td></tr><tr><td></td></tr><tr><td></td></tr></table>>
+]
+Sprite[
+lable = "{Sprite}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+Monster->Sprite
+
+Pacman[
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>Pacman</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>+ getColor() : Color</td></tr></table>>
+]
+Sprite[
+lable = "{Sprite}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+Pacman->Sprite
+
+RandomMonster[color = "red",
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>RandomMonster</td></tr><tr><td></td></tr><tr><td>- direction : char</td></tr><tr><td></td></tr><tr><td>+ getColor() : Color</td></tr><tr><td bgcolor="yellow">+ makeMove() : void</td></tr></table>>
+]
+Monster[
+lable = "{Monster}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+RandomMonster->Monster
+
+Sprite[color = "red",
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>Sprite</td></tr><tr><td></td></tr><tr><td>- board : Board</td></tr><tr><td>- x_location : int</td></tr><tr><td>- y_location : int</td></tr><tr><td>- direction : char</td></tr><tr><td></td></tr><tr><td>+ getColor() : Color</td></tr><tr><td bgcolor="yellow">+ makeMove() : void</td></tr><tr><td bgcolor="yellow">+ setLocation(x : int, y : int) : void</td></tr><tr><td bgcolor="yellow">+ moveInCurrentDirection() : void</td></tr><tr><td bgcolor="yellow">+ canMakeMove() : boolean</td></tr><tr><td bgcolor="yellow">+ getX() : int</td></tr><tr><td bgcolor="yellow">+ getY() : int</td></tr><tr><td bgcolor="yellow">+ getDirection() : char</td></tr><tr><td>+ getBoard() : Board</td></tr><tr><td>+ setDirection(direction : char) : void</td></tr></table>>
+]
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Sprite->Board
+TrackerMonster[color = "red",
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>TrackerMonster</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td bgcolor="yellow">+ getVerticalDirectionToPacman() : char</td></tr><tr><td bgcolor="yellow">+ getHorizontalDirectionToPacman() : char</td></tr><tr><td bgcolor="yellow">+ makeMove() : void</td></tr><tr><td>+ getColor() : Color</td></tr></table>>
+]
+Monster[
+lable = "{Monster}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+TrackerMonster->Monster
+
+BoardPanel[
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>BoardPanel</td></tr><tr><td></td></tr><tr><td>- gameBoard : Board</td></tr><tr><td></td></tr><tr><td>+ paint(g : Graphics) : void</td></tr><tr><td>+ centreString(str : String, g : Graphics, fm : FontMetrics, yPos : int) : void</td></tr><tr><td>+ initLayout() : void</td></tr><tr><td>+ initGridPanels() : void</td></tr></table>>
+]
+JPanel[
+lable = "{JPanel}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+BoardPanel->JPanel
+
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+BoardPanel->Board
+Game[color = "red",
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>Game</td></tr><tr><td></td></tr><tr><td>- gameBoard : Board</td></tr><tr><td>- gameViewPanel : BoardPanel</td></tr><tr><td>- gameTicker : Timer</td></tr><tr><td></td></tr><tr><td>+ init() : void</td></tr><tr><td>+ setupGameTicker() : void</td></tr><tr><td>+ setupViewPanel() : void</td></tr><tr><td>+ createMenus() : void</td></tr><tr><td bgcolor="yellow">+ main(args[] : String) : void</td></tr><tr><td>+ actionPerformed(arg0 : ActionEvent) : void</td></tr><tr><td>+ actionPerformed(e : ActionEvent) : void</td></tr><tr><td>+ keyPressed(e : KeyEvent) : void</td></tr><tr><td bgcolor="yellow">+ keyReleased(e : KeyEvent) : void</td></tr><tr><td>+ keyTyped(e : KeyEvent) : void</td></tr></table>>
+]
+JFrame[
+lable = "{JFrame}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+Game->JFrame
+
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Game->Board
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+Game->BoardPanel
+GridLocationPanel[
+label = <<table border="0" cellborder="0" cellpadding="0" cellspacing="0"><tr><td>GridLocationPanel</td></tr><tr><td></td></tr><tr><td>- GRID_HEIGHT : int</td></tr><tr><td>- GRID_WIDTH : int</td></tr><tr><td>- FOOD_SIZE : int</td></tr><tr><td>- gridLocation : GridLocation</td></tr><tr><td></td></tr><tr><td>+ paint(g : Graphics) : void</td></tr></table>>
+]
+JPanel[
+lable = "{JPanel}"
+]
+edge [
+arrowhead = "empty" 
+headlabel=""
+]
+GridLocationPanel->JPanel
+
+edge[
+arrowhead = "none" 
+headlabel = "0,1"
+]
+GridLocationPanel->GridLocation
+}
